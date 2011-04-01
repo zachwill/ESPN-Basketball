@@ -54,10 +54,10 @@ You can also scrape NCAA Men's Basketball games by passing in a
 The `daterange` function can also come in handy for generating days between two
 specific dates.
 
->>> import datetime
->>> from espn import daterange, get_games
->>> yesterday = datetime.date.today() - datetime.timedelta(1)
->>> week_ago = yesterday - datetime.timedelta(7)
->>> for day in daterange(week_ago, yesterday):
-...     for game in get_games(day):
-...         print game
+    >>> import datetime
+    >>> from espn import daterange, get_games
+    >>> yesterday = datetime.date.today() - datetime.timedelta(1)
+    >>> week_ago = yesterday - datetime.timedelta(7)
+    >>> for day in daterange(week_ago, yesterday):
+    ...     for game in get_games(day):
+    ...         print game
