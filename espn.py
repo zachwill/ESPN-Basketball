@@ -18,7 +18,6 @@ quarters, etc). I've found the majority of games normally have around 400 to
 
 import urllib2
 import re
-import time
 import datetime
 from urlparse import urlparse
 from bs4 import BeautifulSoup as bs
@@ -66,8 +65,7 @@ def adjust_game(plays, league='nba'):
     overall_time, home_score, away_score, home_play, away_play, and 
     official_play (for timeouts, starts of quarters, etc).
     """
-    # TODO: Can't use new_play['quarter'] for NCB games. They use halves.
-    # Maybe 'period' instead of 'quarter'?
+    # TODO: Maybe 'period' instead of 'quarter'? NCB uses 'halves'.
     game = []
     quarter = 1
     end_of_quarter = False
@@ -199,7 +197,7 @@ def parse_plays(game_id, league='nba'):
     teams = thead[0].findChildren('th', {'width':'40%'})
     away_team, home_team = [team.string.title() for team in teams]
     print len(game), away_team, home_team
-    return game
+    return away_team, home_team, game
 
 
 def get_games(day, league='nba', iterable=False):
@@ -225,10 +223,12 @@ def get_games(day, league='nba', iterable=False):
 
 def main():
     yesterday = datetime.date.today() - datetime.timedelta(1)
-    get_games(yesterday)
+    for game in get_games(yesterday, iterable=True):
+        print game
 
 
 if __name__ == '__main__':
+    import time
     start = time.time()
     main()
     print time.time() - start, 'seconds'
