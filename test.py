@@ -22,37 +22,34 @@ class FormatScoreboardUrlTest(unittest.TestCase):
     def setUp(self):
         self.date = datetime.date(2010, 2, 26)
         self.date_string = '20100226'
+        self.correct_nba_link = ('http://scores.espn.go.com/nba/scoreboard?'
+                'date=20100226')
+        self.correct_ncb_link = ('http://scores.espn.go.com/ncb/scoreboard?'
+                'date=20100226&confId=50')
 
-    def test_format_with_datetime(self):
-        correct_link = 'http://scores.espn.go.com/nba/scoreboard?date=20100226'
-        self.assertEqual(_format_scoreboard_url(self.date), correct_link)
+    def test_format_nba_link_with_datetime(self):
+        self.assertEqual(_format_scoreboard_url(self.date),
+                self.correct_nba_link)
 
-    def test_format_with_date_string(self):
-        correct_link = 'http://scores.espn.go.com/nba/scoreboard?date=20100226'
+    def test_format_nba_link_with_date_string(self):
         self.assertEqual(_format_scoreboard_url(self.date_string),
-                correct_link)
+                self.correct_nba_link)
 
     def test_format_ncb_link_with_datetime(self):
-        correct_link = ('http://scores.espn.go.com/ncb/scoreboard?'
-                'date=20100226&confId=50')
         self.assertEqual(_format_scoreboard_url(self.date, league='ncb'),
-                correct_link)
+                self.correct_ncb_link)
 
     def test_format_ncb_link_with_date_string(self):
-        correct_link = ('http://scores.espn.go.com/ncb/scoreboard?'
-                'date=20100226&confId=50')
         self.assertEqual(_format_scoreboard_url(self.date_string,
-            league='ncb'), correct_link)
+                league='ncb'), self.correct_ncb_link)
 
     def test_format_link_with_capital_case(self):
-        correct_link = 'http://scores.espn.go.com/nba/scoreboard?date=20100226'
         self.assertEqual(_format_scoreboard_url(self.date, league='NBA'),
-                correct_link)
+                self.correct_nba_link)
 
     def test_format_link_with_mixed_case(self):
-        correct_link = 'http://scores.espn.go.com/nba/scoreboard?date=20100226'
         self.assertEqual(_format_scoreboard_url(self.date, league='NbA'),
-                correct_link)
+                self.correct_nba_link)
 
 
 class ScrapeLinksTest(unittest.TestCase):
