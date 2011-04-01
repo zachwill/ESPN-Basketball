@@ -41,5 +41,5 @@ Alternatively you can just use a string in `YYYYMMDD` format.
 You don't have to use the `iterable=True` argument &mdash; a list will be passed
 back to you.
 
-    >>> april_fools_last_year = "20110401"
+    >>> april_fools_last_year = "20100401"
     >>> games = get_games(april_fools_last_year)
