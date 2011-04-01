@@ -43,9 +43,9 @@ def _format_scoreboard_url(day, league='nba'):
     return scoreboard_link
 
 
-def scrape_links(scores_link):
+def scrape_links(espn_scoreboard):
     """Scrape ESPN's scoreboard for Play-By-Play links."""
-    url = urllib2.urlopen(scores_link)
+    url = urllib2.urlopen(espn_scoreboard)
     print url.geturl()
     soup = bs(url.read(), ['fast', 'lxml'])
     div = soup.find('div', {'class': 'span-4'})
