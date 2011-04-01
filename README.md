@@ -43,3 +43,10 @@ back to you.
 
     >>> april_fools_last_year = "20100401"
     >>> games = get_games(april_fools_last_year)
+
+Lastly, you can also scrape NCAA Men's Basketball games by passing in a
+`league='ncb'` argument.
+
+    >>> march_1 = '20110301'
+    >>> for ncb_game in get_games(march_1, league='ncb', iterable=True):
+    ...     print ncb_game
