@@ -4,6 +4,8 @@
 
 import unittest
 import datetime
+from mock import Mock
+import espn
 from espn import (daterange, _format_scoreboard_url, scrape_links, adjust_game,
         _league_time, _calc_overall_time, _play_as_dict, _adjust_time)
 
@@ -54,17 +56,34 @@ class FormatScoreboardUrlTest(unittest.TestCase):
 
 class ScrapeLinksTest(unittest.TestCase):
 
-    def setUp(self):
-        self.link = 'http://scores.espn.go.com/nba/scoreboard?date=20100226'
-        self.games = [u'gameId=300226001', u'gameId=300226028',
-                      u'gameId=300226025', u'gameId=300226010',
-                      u'gameId=300226021', u'gameId=300226023',
-                      u'gameId=300226027', u'gameId=300226004',
-                      u'gameId=300226029', u'gameId=300226007',
-                      u'gameId=300226003', u'gameId=300226013']
 
-    def test_scrape_links(self):
-        self.assertEqual(scrape_links(self.link), self.games)
+    def setUp(self):
+        """This set up is a little tricky since we're mocking urllib2."""
+        espn.urllib2 = Mock()
+        self.mock_read = Mock()
+        self.url = 'http://scores.espn.go.com/nba/scoreboard?date=20100226'
+        self.one_link = ('<div class="span-4">'
+                '<a href="nba/playbyplay?gameId=300226001">Play-By-Play</a></div>')
+        self.one_game = [u'gameId=300226001']
+        self.multi_link = ('<div class="span-4">'
+                '<a href="nba/playbyplay?gameId=300226001">Play-By-Play</a>'
+                '<a href="nba/playbyplay?gameId=300226002">Play-By-Play</a></div>')
+        self.multi_game = [u'gameId=300226001', u'gameId=300226002']
+
+    def test_scrape_fails(self):
+        self.mock_read.read.return_value = 'Nothing here. You should fail.'
+        espn.urllib2.urlopen.return_value = self.mock_read
+        self.assertRaises(AttributeError, scrape_links, self.url)
+
+    def test_scrape_works_on_one_link(self):
+        self.mock_read.read.return_value = self.one_link
+        espn.urllib2.urlopen.return_value = self.mock_read
+        self.assertEqual(scrape_links(self.url), self.one_game)
+
+    def test_scrape_works_on_multi_link(self):
+        self.mock_read.read.return_value = self.multi_link
+        espn.urllib2.urlopen.return_value = self.mock_read
+        self.assertEqual(scrape_links(self.url), self.multi_game)
 
 
 class AdjustTimeTest(unittest.TestCase):
