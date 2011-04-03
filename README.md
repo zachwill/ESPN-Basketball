@@ -7,7 +7,8 @@ About
 
 As a huge fan of both basketball and BeautifulSoup 4 (currently in alpha), I
 decided to rewrite an earlier module I'd been using to scrape games from ESPN.
-In order to use this package, you will need both lxml and bs4 installed.
+In order to use this package, you will need `lxml`, `mock`, and `bs4`
+installed.
 
 I've found it parses pages and data pretty fast &mdash; around a second to
 parse a game, rearrange the data into a tuple, and then spit it back out. On
