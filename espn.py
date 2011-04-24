@@ -32,14 +32,14 @@ def daterange(start, end):
 def _format_scoreboard_url(day, league='nba'):
     """Format ESPN scoreboard link to scrape individual box scores from."""
     league = league.lower()
-    link = league + '/scoreboard?date='
+    link = [league + '/scoreboard?date=']
     if isinstance(day, datetime.date):
-        link += day.strftime('%Y%m%d')
+        link.append(day.strftime('%Y%m%d'))
     else:
-        link += day
+        link.append(day)
     if league == 'ncb':
-        link += '&confId=50'
-    scoreboard_link = 'http://scores.espn.go.com/' + link
+        link.append('&confId=50')
+    scoreboard_link = ''.join(['http://scores.espn.go.com/', ''.join(link)])
     return scoreboard_link
 
 
