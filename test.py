@@ -6,8 +6,9 @@ import unittest
 import datetime
 from mock import Mock
 import espn
-from espn import (daterange, _format_scoreboard_url, scrape_links, adjust_game,
-        _league_time, _calc_overall_time, _play_as_dict, _adjust_time)
+from espn import (daterange, _format_scoreboard_url, scrape_links,
+                  adjust_game, _league_time, _calc_overall_time,
+                  _play_as_dict,  _adjust_time)
 
 
 class DateRangeTest(unittest.TestCase):
@@ -25,33 +26,33 @@ class FormatScoreboardUrlTest(unittest.TestCase):
         self.date = datetime.date(2010, 2, 26)
         self.date_string = '20100226'
         self.correct_nba_link = ('http://scores.espn.go.com/nba/scoreboard?'
-                'date=20100226')
+                                 'date=20100226')
         self.correct_ncb_link = ('http://scores.espn.go.com/ncb/scoreboard?'
-                'date=20100226&confId=50')
+                                 'date=20100226&confId=50')
 
     def test_format_nba_link_with_datetime(self):
         self.assertEqual(_format_scoreboard_url(self.date),
-                self.correct_nba_link)
+                         self.correct_nba_link)
 
     def test_format_nba_link_with_date_string(self):
         self.assertEqual(_format_scoreboard_url(self.date_string),
-                self.correct_nba_link)
+                         self.correct_nba_link)
 
     def test_format_ncb_link_with_datetime(self):
         self.assertEqual(_format_scoreboard_url(self.date, league='ncb'),
-                self.correct_ncb_link)
+                         self.correct_ncb_link)
 
     def test_format_ncb_link_with_date_string(self):
-        self.assertEqual(_format_scoreboard_url(self.date_string,
-                league='ncb'), self.correct_ncb_link)
+        self.assertEqual(_format_scoreboard_url(self.date_string, league='ncb'),
+                         self.correct_ncb_link)
 
     def test_format_link_with_capital_case(self):
         self.assertEqual(_format_scoreboard_url(self.date, league='NBA'),
-                self.correct_nba_link)
+                         self.correct_nba_link)
 
     def test_format_link_with_mixed_case(self):
         self.assertEqual(_format_scoreboard_url(self.date, league='NbA'),
-                self.correct_nba_link)
+                         self.correct_nba_link)
 
 
 class ScrapeLinksTest(unittest.TestCase):
@@ -63,11 +64,14 @@ class ScrapeLinksTest(unittest.TestCase):
         self.mock_read = Mock()
         self.url = 'http://scores.espn.go.com/nba/scoreboard?date=20100226'
         self.one_link = ('<div class="span-4">'
-                '<a href="nba/playbyplay?gameId=300226001">Play-By-Play</a></div>')
+                         '<a href="nba/playbyplay?gameId=300226001">'
+                         'Play-By-Play</a></div>')
         self.one_game = [u'gameId=300226001']
         self.multi_link = ('<div class="span-4">'
-                '<a href="nba/playbyplay?gameId=300226001">Play-By-Play</a>'
-                '<a href="nba/playbyplay?gameId=300226002">Play-By-Play</a></div>')
+                           '<a href="nba/playbyplay?gameId=300226001">'
+                           'Play-By-Play</a>'
+                           '<a href="nba/playbyplay?gameId=300226002">'
+                           'Play-By-Play</a></div>')
         self.multi_game = [u'gameId=300226001', u'gameId=300226002']
 
     def test_scrape_fails(self):
@@ -94,7 +98,7 @@ class AdjustTimeTest(unittest.TestCase):
     def test_dictionary_output(self):
         time = self.adjusted[0]
         self.assertEqual(time, {'quarter': 2, 'quarter_time': '12:00',
-            'overall_time': '0:12:00'})
+                                'overall_time': '0:12:00'})
 
     def test_quarter_increases(self):
         quarter = self.adjusted[1]
@@ -185,20 +189,21 @@ class PlayAsDictTest(unittest.TestCase):
     def test_start_of_game_play(self):
         start_play = ['6:33', 'Start of Game']
         self.assertEqual(_play_as_dict(start_play),
-            {'official_play': 'Start of Game', 'home_play': None,
-                'away_play':None})
+                         {'official_play': 'Start of Game', 'home_play': None,
+                            'away_play':None})
 
     def test_home_team_play(self):
         home_play = ['3:44', '&nbsp;', '0-0', 'Test comes through!']
         self.assertEqual(_play_as_dict(home_play),
-                {'official_play': None, 'home_play': 'Test comes through!',
-                    'away_play': None})
+                         {'official_play': None,
+                          'home_play': 'Test comes through!',
+                          'away_play': None})
 
     def test_away_team_play(self):
         away_play = ['2:44', 'Away test wins!', '1-0', '&nbsp;']
         self.assertEqual(_play_as_dict(away_play),
-                {'official_play': None, 'home_play': None,
-                    'away_play': 'Away test wins!'})
+                         {'official_play': None, 'home_play': None,
+                          'away_play': 'Away test wins!'})
 
 
 class AdjustGameTest(unittest.TestCase):
@@ -238,23 +243,26 @@ class AdjustGameTest(unittest.TestCase):
 
     def test_expected_output(self):
         expected_output = [{'away_score': 0, 'quarter_time': '12:00',
-                    'overall_time': '0:00:00', 'away_play': None,
-                    'home_play': None, 'official_play': 'Start of Game',
-                    'quarter': 1, 'home_score': 0},
-                {'away_score': 2, 'quarter_time': '6:00',
-                    'overall_time': '0:06:00', 'away_play': 'Away team scores!',
-                    'home_play': None, 'official_play': None, 'quarter': 1,
-                    'home_score': 0},
-                {'away_score': 2, 'quarter_time': '0:01',
-                    'overall_time': '0:11:59', 'away_play': None,
-                    'home_play': 'Home team scores!', 'official_play': None,
-                    'quarter': 1, 'home_score': 2},
-                {'away_score': 2, 'quarter_time': '12:00',
-                    'overall_time': '0:12:00', 'away_play': None,
-                    'home_play': None, 'official_play': 'Start of new quarter',
-                    'quarter': 2, 'home_score': 2}]
-        self.assertEqual(adjust_game(self.game),
-                expected_output)
+                            'overall_time': '0:00:00', 'away_play': None,
+                            'home_play': None,
+                            'official_play': 'Start of Game',
+                            'quarter': 1, 'home_score': 0},
+                           {'away_score': 2, 'quarter_time': '6:00',
+                            'overall_time': '0:06:00',
+                            'away_play': 'Away team scores!',
+                            'home_play': None, 'official_play': None,
+                            'quarter': 1, 'home_score': 0},
+                           {'away_score': 2, 'quarter_time': '0:01',
+                            'overall_time': '0:11:59', 'away_play': None,
+                            'home_play': 'Home team scores!',
+                            'official_play': None,
+                            'quarter': 1, 'home_score': 2},
+                           {'away_score': 2, 'quarter_time': '12:00',
+                            'overall_time': '0:12:00', 'away_play': None,
+                            'home_play': None,
+                            'official_play': 'Start of new quarter',
+                            'quarter': 2, 'home_score': 2}]
+        self.assertEqual(adjust_game(self.game), expected_output)
 
 
 if __name__ == '__main__':
