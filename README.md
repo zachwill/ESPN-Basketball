@@ -1,6 +1,9 @@
 ESPN Basketball
 ===============
 
+**Warning**: This is a very outdated project. I would recommend you look to build
+your scrapers with something like [Scrapy](http://scrapy.org) instead.
+
 
 About
 -----
